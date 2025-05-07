@@ -34,7 +34,7 @@ movie-watchlist/
 
 ## Demo
 
-[Live Demo](https://mywatchlistt.netlify.app/) 
+live demo link: https://mywatchlistt.netlify.app/ 
 
 ![Screenshot](images/scarface.png) 
 
