@@ -392,7 +392,8 @@ button{
     }
 
     .movie-description{
-        font-size: 1rem;
+        font-size: .9rem;
+        height: auto;
     }
 }
 
