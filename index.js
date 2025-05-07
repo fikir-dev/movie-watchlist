@@ -12,7 +12,7 @@ const watchlist = document.getElementById('watchlist')
 searchBtn.addEventListener('click', async () => {
     moviesArray = []
     const movieSearched = document.getElementById('movieSearched').value
-    const url = `http://www.omdbapi.com/?s=${movieSearched}&apikey=d28c5507`
+    const url = `https://www.omdbapi.com/?s=${movieSearched}&apikey=d28c5507`
 
 
     moviesHolder.innerHTML = '<div class="loading">Loading...</div>'
@@ -63,7 +63,7 @@ function getMoviesImdbId() {
 
 async function getExtraMovieDetails() {
     const promises = moviesImdbID.map((movieId) => {
-        let url = `http://www.omdbapi.com/?i=${movieId}&apikey=d28c5507`;
+        let url = `https://www.omdbapi.com/?i=${movieId}&apikey=d28c5507`;
         return fetch(url)
         .then(res => res.json());
     });
