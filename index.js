@@ -32,7 +32,6 @@ searchBtn.addEventListener('click', async () => {
         readMore()
     } 
     catch (error) {
-        console.error('Search error:', error)
         moviesHolder.innerHTML = '<div class="error">Error searching movies. Please try again.</div>'
     }
 })
@@ -42,6 +41,9 @@ watchlist.addEventListener('click', () => {
 });
 
 function checkForMovies() {
+    if (!moviesArray.Response) {
+        throw new Error('No response from API');
+    }
     if (moviesArray.Response === "True" && moviesArray.Search) {
         moviesPlaceholder.style.display = "none";
         moviesHolder.style.display = "flex";
@@ -71,12 +73,11 @@ async function getExtraMovieDetails() {
 }
 
 moviesHolder.addEventListener('click', (event) => {
-    const addWatchlistButton = event.target.closest('.add-watchlist');
-    if (addWatchlistButton) {
-        const movieIndex = Array.from(moviesHolder.children).indexOf(addWatchlistButton.closest('.movies'));
-        const movie = extraMovies[movieIndex];
-        addToWatchlist(movie)
-    }
+    const movieElement = event.target.closest('.add-watchlist')?.closest('.movies');
+    if (!movieElement) return;
+    
+    const movieIndex = [...moviesHolder.children].indexOf(movieElement);
+    addToWatchlist(extraMovies[movieIndex]);
 });
 
 function addToWatchlist(movie) {
@@ -88,9 +89,6 @@ function addToWatchlist(movie) {
         currentWatchlist.unshift(movie);
         localStorage.setItem("addedMovies", JSON.stringify(currentWatchlist));
         moviesAddedToWatchlist = currentWatchlist;
-        console.log(`"${movie.Title}" added to watchlist`);
-    } else {
-        console.log(`"${movie.Title}" is already in the watchlist`);
     }
 }
 
