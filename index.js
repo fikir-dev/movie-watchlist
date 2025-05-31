@@ -60,6 +60,7 @@ function getMoviesImdbId() {
         moviesArray.Search.slice(0,6).forEach((movie) => {
             moviesImdbID.push(movie.imdbID);
         });
+        console.log(moviesImdbID)
     }
 }
 
