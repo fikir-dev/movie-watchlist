@@ -370,6 +370,15 @@ button:hover {
     .movie-description{
         font-size: .8rem;
     }
+
+    .read-more-btn {
+        display: none !important;
+    }
+    
+    .movie-description.collapsed {
+        max-height: none;
+        overflow: visible;
+    }
 }
 
 @media (min-width: 1440px){

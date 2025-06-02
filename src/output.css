@@ -161,6 +161,24 @@
   }
 }
 @layer utilities {
+  .container {
+    width: 100%;
+    @media (width >= 40rem) {
+      max-width: 40rem;
+    }
+    @media (width >= 48rem) {
+      max-width: 48rem;
+    }
+    @media (width >= 64rem) {
+      max-width: 64rem;
+    }
+    @media (width >= 80rem) {
+      max-width: 80rem;
+    }
+    @media (width >= 96rem) {
+      max-width: 96rem;
+    }
+  }
   .block {
     display: block;
   }
@@ -169,6 +187,9 @@
   }
   .cursor-pointer {
     cursor: pointer;
+  }
+  .resize {
+    resize: both;
   }
   .rounded-lg {
     border-radius: var(--radius-lg);
@@ -497,6 +518,13 @@ button:hover {
   }
   .movie-description {
     font-size: .8rem;
+  }
+  .read-more-btn {
+    display: none !important;
+  }
+  .movie-description.collapsed {
+    max-height: none;
+    overflow: visible;
   }
 }
 @media (min-width: 1440px) {
