@@ -78,8 +78,30 @@ moviesHolder.addEventListener('click', (event) => {
     if (!movieElement) return;
     
     const movieIndex = [...moviesHolder.children].indexOf(movieElement);
-    addToWatchlist(extraMovies[movieIndex]);
+    const movie = extraMovies[movieIndex];
+    const isInWatchlist = moviesAddedToWatchlist.some(item => item.imdbID === movie.imdbID);
+    
+    if (isInWatchlist) {
+        removeFromWatchlist(movie);
+    } else {
+        addToWatchlist(movie);
+    }
 });
+
+function removeFromWatchlist(movie) {
+    const currentWatchlist = JSON.parse(localStorage.getItem("addedMovies")) || [];
+    const updatedWatchlist = currentWatchlist.filter(item => item.imdbID !== movie.imdbID);
+    
+    localStorage.setItem("addedMovies", JSON.stringify(updatedWatchlist));
+    moviesAddedToWatchlist = updatedWatchlist;
+    
+    // Find and update the button state
+    const movieCard = document.querySelector(`[data-movie-id="${movie.imdbID}"]`);
+    if (movieCard) {
+        const watchlistBtn = movieCard.querySelector('.add-watchlist');
+        updateWatchlistButton(watchlistBtn, false);
+    }
+}
 
 function addToWatchlist(movie) {
     const currentWatchlist = JSON.parse(localStorage.getItem("addedMovies")) || [];
@@ -90,16 +112,47 @@ function addToWatchlist(movie) {
         currentWatchlist.unshift(movie);
         localStorage.setItem("addedMovies", JSON.stringify(currentWatchlist));
         moviesAddedToWatchlist = currentWatchlist;
+        
+        // Find and update the button state
+        const movieCard = document.querySelector(`[data-movie-id="${movie.imdbID}"]`);
+        if (movieCard) {
+            const watchlistBtn = movieCard.querySelector('.add-watchlist');
+            updateWatchlistButton(watchlistBtn, true);
+        }
+    }
+}
+
+function updateWatchlistButton(buttonElement, isAdded) {
+    const icon = buttonElement.querySelector('.add-icon');
+    const text = buttonElement.querySelector('.small-font');
+    
+    if (isAdded) {
+        icon.src = 'images/subtract-icon.png';
+        text.textContent = 'Added';
+    } else {
+        icon.src = 'images/add-icon.png';
+        text.textContent = 'Watchlist';
     }
 }
 
 function readMore(){
     document.querySelectorAll('.read-more-btn').forEach(button => {
-        button.addEventListener('click', function() {
+        // Remove any existing event listeners
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // Check if the text actually needs truncation
+        const description = newButton.previousElementSibling;
+        const needsTruncation = description.scrollHeight > description.clientHeight;
+        
+        // Only show the button if truncation is needed
+        newButton.style.display = needsTruncation ? 'block' : 'none';
+        
+        newButton.addEventListener('click', function() {
             const description = this.previousElementSibling;
             const isCollapsed = description.classList.contains('collapsed');
             
-            description.classList.toggle('collapsed');            
+            description.classList.toggle('collapsed');
             this.textContent = isCollapsed ? 'Read less' : 'Read more';
         });
     });
@@ -109,8 +162,10 @@ function renderMovies() {
     moviesHolder.innerHTML = ""
     extraMovies.forEach((movie) => {
         const description = movie.Plot;
+        const isInWatchlist = moviesAddedToWatchlist.some(item => item.imdbID === movie.imdbID);
+        
         moviesHolder.innerHTML += 
-        ` <div class="movies">
+        ` <div class="movies" data-movie-id="${movie.imdbID}">
                 <img class="movie-img" src="${movie.Poster}" alt="${movie.Title}">
                 <div class="movie-details">
                     <div class="ratings">
@@ -120,18 +175,18 @@ function renderMovies() {
                     <div class="extra-movie-details">
                         <p class="small-font">${movie.Runtime}</p>
                         <p class="small-font" id="movie-genre">${movie.Genre}</p>
-                        <div class="add-watchlist">
-                            <img class="add-icon" src="images/add-icon.png" alt="">
-                            <p class="small-font">Watchlist</p>
+                        <div class="add-watchlist transition-all duration-300 hover:scale-110 cursor-pointer rounded-lg p-2">
+                            <img class="add-icon" src="${isInWatchlist ? 'images/subtract-icon.png' : 'images/add-icon.png'}" alt="">
+                            <p class="small-font">${isInWatchlist ? 'Added' : 'Watchlist'}</p>
                         </div>
                     </div>
                     <div class="description-container">
                         <p class="movie-description collapsed">${description}</p>
-                        ${description.length > 160 ? `<button class="read-more-btn">Read more</button>` : ''}
+                        <button class="read-more-btn" style="display: ${description && description.length > 50 ? 'block' : 'none'}">Read more</button>
                     </div>
             </div>
         `;
     });
-
+    readMore();
 }
 

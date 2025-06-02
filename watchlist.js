@@ -20,7 +20,7 @@ function renderWatchlist(){
                     <div class="extra-movie-details">
                         <p class="small-font">${movie.Runtime}</p>
                         <p class="small-font" id="movie-genre">${movie.Genre}</p>
-                        <div class="add-watchlist">
+                        <div class="add-watchlist transition-all duration-300 hover:scale-110 cursor-pointer rounded-lg p-2">
                             <img class="add-icon" src="images/subtract-icon.png" alt="">
                             <p class="small-font">Remove</p>
                         </div>
